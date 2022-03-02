@@ -228,10 +228,10 @@ class raven2_py_controller():
     # [Note]: There is no clear reason why the dimension of the joint command is 15 in CRTK RAVEN. But it is confirmed that this is not to control 2 arms. Each arm should have its own controller node
     def go_to_jr(self, target_jpos, max_vel = np.array([3*Deg2Rad, 3*Deg2Rad, 0.01, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad])):
 
-        target_jpos = target_jpos[1:] * Deg2Rad # This is to meet the format of CRTK, where joint 1 is at index 0
+        target_jpos = target_jpos[1:]  # This is to meet the format of CRTK, where joint 1 is at index 0
         
-        target_jpos_1 = self.target_jpos[0]
-        target_jpos_2 = self.target_jpos[1]
+        target_jpos_1 = self.target_jpos[0] * Deg2Rad
+        target_jpos_2 = self.target_jpos[1] * Deg2Rad
         target_jpos_3 = self.target_jpos[2]
         
         moving = True
@@ -257,7 +257,7 @@ class raven2_py_controller():
                 print('Joint 2 target (Deg): ' + str(target_jpos_2*Rad2Deg) + ' | current: ' + + str(cur_jpos_2*Rad2Deg))
                 print('Joint 3 target (m): ' + str(target_jpos_3) + ' | current: ' + + str(cur_jpos_3))
             
-            if (np.abs(target_jpos_1 - cur_jpos_1)*Rad2Deg > 1) & (np.abs(target_jpos_2 - cur_jpos_2)*Rad2Deg > 1) & (np.abs(target_jpos_3 - cur_jpos_3) > 0.005):
+            if (np.abs(target_jpos_1 - cur_jpos_1)*Rad2Deg <= 1) & (np.abs(target_jpos_2 - cur_jpos_2)*Rad2Deg <= 1) & (np.abs(target_jpos_3 - cur_jpos_3) <= 0.005):
                 moving = False
 
             
