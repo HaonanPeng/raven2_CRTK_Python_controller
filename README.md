@@ -12,6 +12,6 @@ Then, in a new terminal, find the path of the 'python_controller' and start the 
 
 ```
 python run_r2_keyboard_controller.py
-``
+```
 
 Please notice that the current version only allows one key input at a time for stability.
