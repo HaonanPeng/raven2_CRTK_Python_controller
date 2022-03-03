@@ -1,7 +1,7 @@
 import func_raven_bag_reader as reader
 
 
-bag_name = 'recorder_ravenstate3.bag'
+bag_name = 'recorder_ravenstate.bag'
 result_name = bag_name[:-3] + 'csv'
 
 bag_path = 'bag_files'

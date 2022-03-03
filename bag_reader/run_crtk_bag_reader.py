@@ -1,7 +1,7 @@
 import func_raven_bag_reader as reader
 
 
-bag_name = 'recorder_CRTKmeasurejs3.bag'
+bag_name = 'recorder_CRTKmeasurejs.bag'
 result_name = bag_name[:-3] + 'csv'
 
 bag_path = 'bag_files'
