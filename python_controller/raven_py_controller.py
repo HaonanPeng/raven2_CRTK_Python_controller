@@ -216,7 +216,7 @@ class raven2_py_controller():
         self.time_last_pub_move = time.time()
         self.pub_count_motion += 1
 
-        print('Command pub count: ' + str(self.pub_count_motion) + ' | msg: ' + str(joint_command)) # [debug]
+        #print('Command pub count: ' + str(self.pub_count_motion) + ' | msg: ' + str(joint_command)) # [debug]
 
         return 0
     
@@ -226,13 +226,13 @@ class raven2_py_controller():
     # [Input ]: target_jpos - in degree an np.array of dimension 16, target_jpos[1] should be the target pose of joint 1 (rad and m /sec) || max_vel in degree, an np.array of dimension 16
     # [Return]: 0 if finished moving
     # [Note]: There is no clear reason why the dimension of the joint command is 15 in CRTK RAVEN. But it is confirmed that this is not to control 2 arms. Each arm should have its own controller node
-    def go_to_jr(self, target_jpos, max_vel = np.array([3*Deg2Rad, 3*Deg2Rad, 0.01, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad])):
+    def go_to_jr(self, target_jpos, max_vel = np.array([0, 3*Deg2Rad, 3*Deg2Rad, 0.01, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad])):
 
         target_jpos = target_jpos[1:]  # This is to meet the format of CRTK, where joint 1 is at index 0
         
-        target_jpos_1 = self.target_jpos[0] * Deg2Rad
-        target_jpos_2 = self.target_jpos[1] * Deg2Rad
-        target_jpos_3 = self.target_jpos[2]
+        target_jpos_1 = target_jpos[0] * Deg2Rad
+        target_jpos_2 = target_jpos[1] * Deg2Rad
+        target_jpos_3 = target_jpos[2]
         
         moving = True
         count = 0
@@ -241,21 +241,22 @@ class raven2_py_controller():
             cur_jpos_2 = self.measured_jpos[1]
             cur_jpos_3 = self.measured_jpos[2]
             
-            cmd = np.zeros((15))
+            cmd = np.zeros((16))
             if (np.abs(target_jpos_1 - cur_jpos_1)*Rad2Deg > 1):
-                cmd[0] = np.clip(target_jpos_1 - cur_jpos_1, -max_vel[0], max_vel[0])
+                cmd[1] = np.clip(target_jpos_1 - cur_jpos_1, -max_vel[1], max_vel[1])
             if (np.abs(target_jpos_2 - cur_jpos_2)*Rad2Deg > 1):
-                cmd[1] = np.clip(target_jpos_2 - cur_jpos_2, -max_vel[1], max_vel[1])
+                cmd[2] = np.clip(target_jpos_2 - cur_jpos_2, -max_vel[2], max_vel[2])
             if (np.abs(target_jpos_3 - cur_jpos_3) > 0.005):
-                cmd[2] = np.clip(target_jpos_3 - cur_jpos_3, -max_vel[2], max_vel[2])
+                cmd[3] = np.clip(target_jpos_3 - cur_jpos_3, -max_vel[3], max_vel[3])
                 
-            self.pub_jr_command(cmd)
+            self.pub_jr_command(cmd * 1e-3)
             count += 1
             
             if count % 50 == 0:
-                print('Joint 1 target (Deg): ' + str(target_jpos_1*Rad2Deg) + ' | current: ' + + str(cur_jpos_1*Rad2Deg)) #
-                print('Joint 2 target (Deg): ' + str(target_jpos_2*Rad2Deg) + ' | current: ' + + str(cur_jpos_2*Rad2Deg))
-                print('Joint 3 target (m): ' + str(target_jpos_3) + ' | current: ' + + str(cur_jpos_3))
+                print('--------------------------------------------')
+                print('Joint 1 target (Deg): ' + str(target_jpos_1*Rad2Deg) + ' | current: '  + str(cur_jpos_1*Rad2Deg)) #
+                print('Joint 2 target (Deg): ' + str(target_jpos_2*Rad2Deg) + ' | current: '  + str(cur_jpos_2*Rad2Deg))
+                print('Joint 3 target (m): ' + str(target_jpos_3) + ' | current: '  + str(cur_jpos_3))
             
             if (np.abs(target_jpos_1 - cur_jpos_1)*Rad2Deg <= 1) & (np.abs(target_jpos_2 - cur_jpos_2)*Rad2Deg <= 1) & (np.abs(target_jpos_3 - cur_jpos_3) <= 0.005):
                 moving = False
