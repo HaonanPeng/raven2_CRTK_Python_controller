@@ -67,7 +67,7 @@ class raven2_runtime_monitor():
         # self.measured_jvel = None # (15,) array of measured joint velocity
         # self.measured_jeff = None # (15,) array of measured joint effort
         self.rec_cpos = np.zeros((1,4))
-        self.rec_jpos = np.zeros((1,16))
+        self.rec_jpos = np.zeros((1,8))
         self.rec_control_jr = np.zeros((1,16))
         
         self.time_start = rospy.get_time()
@@ -119,7 +119,7 @@ class raven2_runtime_monitor():
         
         if rospy.get_time() - self.time_last_sample_cpos >= self.intv_sample:
             new_line = np.zeros((1,4))
-            new_line[0, 0] = rospy.get_time()
+            new_line[0, 0] = rospy.get_time()-self.time_start
             new_line[0, 1] = msg.transform.translation.x
             new_line[0, 2] = msg.transform.translation.y
             new_line[0, 3] = msg.transform.translation.z        
@@ -133,7 +133,9 @@ class raven2_runtime_monitor():
         self.measured_jeff = np.array(msg.effort)
         
         if rospy.get_time() - self.time_last_sample_jpos >= self.intv_sample:
-            new_line = np.array([np.append(rospy.get_time(), self.measured_jpos)])
+            new_line = np.array([np.append(rospy.get_time()-self.time_start, self.measured_jpos)])
+	    #print(self.rec_jpos.shape)
+            #print(new_line.shape)
             self.rec_jpos = np.append(self.rec_jpos, new_line, axis = 0)
         
         return None
@@ -144,8 +146,8 @@ class raven2_runtime_monitor():
         self.servo_jr_jeff = np.array(msg.effort)
         
         if rospy.get_time() - self.time_last_sample_servo_jr >= self.intv_sample:
-            new_line = np.array([np.append(rospy.get_time(), self.servo_jr_jpos)])
-            self.control_jr = np.append(self.control_jr, new_line, axis = 0)
+            new_line = np.array([np.append(rospy.get_time()-self.time_start, self.servo_jr_jpos)])
+            self.rec_control_jr = np.append(self.rec_control_jr, new_line, axis = 0)
         
         return None
 
@@ -164,43 +166,55 @@ class raven2_runtime_monitor():
             if rospy.get_time() - self.time_last_output >= self.intv_output:
                 # Fig 1: 3D traj in joint space
                 fig1 = plt.figure(1)
-                ax1 = fig1.gca(projection='3d')
-                ax1.xlabel('joint 1(Deg)')
-                ax1.ylabel('joint 2(Deg)')
-                ax1.zlabel('joint 3(m)')
-                ax1.plot(self.rec_jpos[1:,1]*Rad2Deg, self.rec_jpos[1:,2]*Rad2Deg, self.rec_jpos[1:,3])
-                ax1.scatter(self.rec_jpos[-1,1]*Rad2Deg, self.rec_jpos[-1:,2]*Rad2Deg, self.rec_jpos[-1:,3], label=str("%.4f" % (self.rec_jpos[-1,1]*Rad2Deg)) + ', ' + str("%.4f" % (self.rec_jpos[-1,2]*Rad2Deg)) + ', ' + str("%.4f" % (self.rec_jpos[-1,3])))         
+                fig1.clf()
+                ax1 = fig1.add_subplot(111, projection='3d')
+                #ax1 = fig1.gca(projection='3d')
+                ax1.set_xlabel('joint 1(Deg)')
+                ax1.set_ylabel('joint 2(Deg)')
+                ax1.set_zlabel('joint 3(m)')
+                rec_jpos = self.rec_jpos #[IMPT] cannot directly use it as self.rec_jpos, because it will be updated by callback in this procedure and cause dimensions to be different 
+                ax1.plot(rec_jpos[1:,1]*Rad2Deg, rec_jpos[1:,2]*Rad2Deg, rec_jpos[1:,3], c='b')
+                ax1.scatter(rec_jpos[-1,1]*Rad2Deg, rec_jpos[-1,2]*Rad2Deg, rec_jpos[-1,3], label=str("%.4f" % (rec_jpos[-1,1]*Rad2Deg)) + ', ' + str("%.4f" % (rec_jpos[-1,2]*Rad2Deg)) + ', ' + str("%.4f" % (rec_jpos[-1,3])), c='r')         
                 ax1.legend()
+                plt.title('3D traj in joint space')
                 
                 # Fig 2: 2D traj in joint space
-                fig1 = plt.figure(2)
+                fig2 = plt.figure(2)
+                fig2.clf()
                 plt.subplot(3, 1, 1)
-                plt.plot(self.rec_jpos[1:,0], self.rec_jpos[1:,1]*Rad2Deg)
+                plt.plot(rec_jpos[1:,0], rec_jpos[1:,1]*Rad2Deg)
                 plt.ylabel('joint 1(Deg)')
+                plt.title('joint trajs')
                 
-                plt.subplot(3, 1, 1)
-                plt.plot(self.rec_jpos[1:,0], self.rec_jpos[1:,2]*Rad2Deg)
+                plt.subplot(3, 1, 2)
+                plt.plot(rec_jpos[1:,0], rec_jpos[1:,2]*Rad2Deg)
                 plt.ylabel('joint 2(Deg)')
                 
-                plt.subplot(3, 1, 1)
-                plt.plot(self.rec_jpos[1:,0], self.rec_jpos[1:,3])
+                plt.subplot(3, 1, 3)
+                plt.plot(rec_jpos[1:,0], rec_jpos[1:,3])
                 plt.ylabel('joint 3(m)')
+                plt.xlabel('time(s)')
                 
                 # Fig 3: joint jr motion command
-                fig1 = plt.figure(3)
+                rec_control_jr = self.rec_control_jr
+                fig3 = plt.figure(3)
+                fig3.clf()
                 plt.subplot(3, 1, 1)
-                plt.plot(self.rec_control_jr[1:,0], self.rec_control_jr[1:,1]*Rad2Deg*1e3)
+                plt.plot(rec_control_jr[1:,0], rec_control_jr[1:,1]*Rad2Deg*1e3)
                 plt.ylabel('joint 1(Deg/s)')
+                plt.title('joint motion commands')
                 
-                plt.subplot(3, 1, 1)
-                plt.plot(self.rec_control_jr[1:,0], self.rec_control_jr[1:,2]*Rad2Deg*1e3)
+                plt.subplot(3, 1, 2)
+                plt.plot(rec_control_jr[1:,0], rec_control_jr[1:,2]*Rad2Deg*1e3)
                 plt.ylabel('joint 2(Deg/s)')
                 
-                plt.subplot(3, 1, 1)
-                plt.plot(self.rec_control_jr[1:,0], self.rec_control_jr[1:,3]*1e3)
+                plt.subplot(3, 1, 3)
+                plt.plot(rec_control_jr[1:,0], rec_control_jr[1:,3]*1e3)
                 plt.ylabel('joint 3(m/s)')
+                plt.xlabel('time(s)')
                 
-                plt.show()
+                plt.show(block = False)
+                plt.pause(self.intv_output)
                 
         
         return None

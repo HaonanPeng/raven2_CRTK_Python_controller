@@ -43,16 +43,16 @@ Rad2Deg = 180.0 / np.pi
 # joint limits in degree and meter(joint 3), this is the soft limit of this controller
 limit_joint_1 = np.array([25.0, 55.0]) * Deg2Rad
 limit_joint_2 = np.array([75.0, 115.0]) * Deg2Rad
-limit_joint_3 = np.array([0.35, 0.38])
+limit_joint_3 = np.array([0.33, 0.39])
 
 # This will be the range of how joint target can be changed 
 limit_range_joint_1 = np.array([10, -10]) * Deg2Rad
 limit_range_joint_2 = np.array([10, -10]) * Deg2Rad
 limit_range_joint_3 = np.array([0.01, -0.01])
 
-vel_limit_joint_1 = np.array([2.0, 3.0]) * Deg2Rad
-vel_limit_joint_2 = np.array([2.0, 3.0]) * Deg2Rad
-vel_limit_joint_3 = np.array([0.005, 0.015])
+vel_limit_joint_1 = np.array([1.5, 2.5]) * Deg2Rad
+vel_limit_joint_2 = np.array([1.5, 2.5]) * Deg2Rad
+vel_limit_joint_3 = np.array([0.005, 0.010])
 
 rospy.init_node('raven_randonm_movement', anonymous=True)
 
@@ -86,7 +86,7 @@ while time.time() - start_time  <= run_time:
         continue
     
     # swith the direction after reaching target
-    if (dir_1 > 0) & (cur_jpos_1 > limit_joint_1[1]):
+    if (dir_1 > 0) & (cur_jpos_1 > target_joint_1[1]):
         dir_1 = dir_1 * -1
         target_joint_1 = limit_joint_1 + np.random.rand() * limit_range_joint_1 # randomly change target
         vel_joint_1 = np.random.uniform(vel_limit_joint_1[0], vel_limit_joint_1[1]) # randomly change velocity
@@ -94,7 +94,7 @@ while time.time() - start_time  <= run_time:
             cmd = np.zeros((16))
             r2py_ctl.pub_jr_command(cmd) 
         
-    if (dir_1 < 0) & (cur_jpos_1 < limit_joint_1[0]):
+    if (dir_1 < 0) & (cur_jpos_1 < target_joint_1[0]):
         dir_1 = dir_1 * -1
         target_joint_1 = limit_joint_1 + np.random.rand() * limit_range_joint_1 # randomly change target
         vel_joint_1 = np.random.uniform(vel_limit_joint_1[0], vel_limit_joint_1[1]) # randomly change velocity
@@ -102,14 +102,14 @@ while time.time() - start_time  <= run_time:
             cmd = np.zeros((16))
             r2py_ctl.pub_jr_command(cmd) 
         
-    if (dir_2 > 0) & (cur_jpos_2 > limit_joint_2[1]):
+    if (dir_2 > 0) & (cur_jpos_2 > target_joint_2[1]):
         dir_2 = dir_2 * -1
         target_joint_2 = limit_joint_2 + np.random.rand() * limit_range_joint_2 # randomly change target
         vel_joint_2 = np.random.uniform(vel_limit_joint_2[0], vel_limit_joint_2[1]) # randomly change velocity
         for i in range(0,50): # publish zero command for 50 loops 
             cmd = np.zeros((16))
             r2py_ctl.pub_jr_command(cmd) 
-    if (dir_2 < 0) & (cur_jpos_2 < limit_joint_2[0]):
+    if (dir_2 < 0) & (cur_jpos_2 < target_joint_2[0]):
         dir_2 = dir_2 * -1
         target_joint_2 = limit_joint_2 + np.random.rand() * limit_range_joint_2 # randomly change target
         vel_joint_2 = np.random.uniform(vel_limit_joint_2[0], vel_limit_joint_2[1]) # randomly change velocity
@@ -117,14 +117,14 @@ while time.time() - start_time  <= run_time:
             cmd = np.zeros((16))
             r2py_ctl.pub_jr_command(cmd) 
         
-    if (dir_3 > 0) & (cur_jpos_3 > limit_joint_3[1]):
+    if (dir_3 > 0) & (cur_jpos_3 > target_joint_3[1]):
         dir_3 = dir_3 * -1
         target_joint_3 = limit_joint_3 + np.random.rand() * limit_range_joint_3 # randomly change target
         vel_joint_3 = np.random.uniform(vel_limit_joint_3[0], vel_limit_joint_3[1]) # randomly change velocity
         for i in range(0,50): # publish zero command for 50 loops 
             cmd = np.zeros((16))
             r2py_ctl.pub_jr_command(cmd) 
-    if (dir_3 < 0) & (cur_jpos_3 < limit_joint_3[0]):
+    if (dir_3 < 0) & (cur_jpos_3 < target_joint_3[0]):
         dir_3 = dir_3 * -1
         target_joint_3 = limit_joint_3 + np.random.rand() * limit_range_joint_3 # randomly change target
         vel_joint_3 = np.random.uniform(vel_limit_joint_3[0], vel_limit_joint_3[1]) # randomly change velocity

@@ -36,7 +36,9 @@ import rospy
 import numpy as np
 import raven_runtime_monitor
 
-runtime_monitor = raven_runtime_monitor(name_space = ' ', robot_name = 'arm1', grasper_name = 'grasp1',
-                                        sample_rate = 20, output_rate = 1)
+rospy.init_node('raven_runtime_monitor', anonymous=True)
+
+runtime_monitor = raven_runtime_monitor.raven2_runtime_monitor(name_space = ' ', robot_name = 'arm1', grasper_name = 'grasp1',
+                                        sample_rate = 20, output_rate = 5)
 
 runtime_monitor.start_raven_monitor()
