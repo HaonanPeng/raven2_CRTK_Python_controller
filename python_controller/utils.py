@@ -18,6 +18,9 @@ def print_manu():
     print('[Joint 5 +]: 5 | [Joint 5 -]: t')
     print('[Joint 6 +]: 6 | [Joint 6 -]: y')
     print('[Joint 7 +]: 7 | [Joint 7 -]: u')
+
+    print('[Grasper open ]: o')
+    print('[Grasper close ]: p')
     
     print('[Grasper farward ]: s')
     print('[Grasper backward]: x')

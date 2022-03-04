@@ -152,6 +152,20 @@ while working==1:
         cmd = np.zeros((16))
         cmd[7] = -10 * Deg2Rad * 1e-3
         r2py_ctl.pub_jr_command(cmd)
+
+    elif input_key == 'o':
+        utils.print_no_newline(" Moving: Grasper open         ")
+        cmd = np.zeros((16))
+        cmd[6] = 10 * Deg2Rad * 1e-3
+        cmd[7] = 10 * Deg2Rad * 1e-3
+        r2py_ctl.pub_jr_command(cmd)
+
+    elif input_key == 'p':
+        utils.print_no_newline(" Moving: Grasper close         ")
+        cmd = np.zeros((16))
+        cmd[6] = -10 * Deg2Rad * 1e-3
+        cmd[7] = -10 * Deg2Rad * 1e-3
+        r2py_ctl.pub_jr_command(cmd)
         
     # Cartisian space control----------------------------------------------
     elif input_key == 's':
