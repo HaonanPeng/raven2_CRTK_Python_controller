@@ -1,0 +1,39 @@
+<launch>
+
+  <node
+    pkg="topic_tools"
+    type="throttle"
+    name="ravenstate_throttle"
+    args="messages ravenstate 100 ravenstate_100hz"
+  />
+
+  <node
+    pkg="topic_tools"
+    type="throttle"
+    name="crtk_throttle"
+    args="messages /arm2/measured_js 100 /arm2/measured_js_100hz"
+  />
+
+  <node
+    pkg="rosbag"
+    type="record"
+    name="recorder_ravenstate"
+    args="-b 0 -O /home/supernova/rosbags/recorder_ravenstate.bag ravenstate_100hz"
+  />
+
+  <node
+    pkg="rosbag"
+    type="record"
+    name="recorder_crtk_measurejs"
+    args="-b 0 -O /home/supernova/rosbags/recorder_CRTKmeasurejs.bag /arm2/measured_js_100hz"
+  />
+
+  <node
+    pkg="rosbag"
+    type="record"
+    name="recorder_ext_jenc"
+    args="-b 0 -O /home/supernova/rosbags/recorder_ext_jenc.bag /ext_jpos"
+  />
+  
+
+</launch>
