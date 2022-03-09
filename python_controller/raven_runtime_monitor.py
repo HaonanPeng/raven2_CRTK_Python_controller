@@ -33,7 +33,7 @@ import time
 
 import rospy
 import numpy as np
-from scipy.spatial.transform import Rotation as sp_rot
+# from scipy.spatial.transform import Rotation as sp_rot
 import std_msgs.msg
 import geometry_msgs.msg
 import sensor_msgs.msg
@@ -109,7 +109,7 @@ class raven2_runtime_monitor():
         return idx[0]
 
     def __callback_measured_cp(self, msg):
-        rot = sp_rot.from_quat([msg.transform.rotation.x, msg.transform.rotation.y, msg.transform.rotation.z, msg.transform.rotation.w])
+        # rot = sp_rot.from_quat([msg.transform.rotation.x, msg.transform.rotation.y, msg.transform.rotation.z, msg.transform.rotation.w])
 
         # self.measured_cpos_tranform[0:3,0:3] = rot.as_matrix() # there is an error, 'no method called as_matrix'
         self.measured_cpos_tranform[0,3] = msg.transform.translation.x

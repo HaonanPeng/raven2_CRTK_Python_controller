@@ -11,6 +11,7 @@ def print_manu():
     print('-----------------------------------------')
     print('RAVEN 2 Keyboard Controller:')
     print('-----------------------------------------')
+    print('[Exit]: 9')
     print('[Joint 1 +]: 1 | [Joint 1 -]: q')
     print('[Joint 2 +]: 2 | [Joint 2 -]: w')
     print('[Joint 3 +]: 3 | [Joint 3 -]: e')
