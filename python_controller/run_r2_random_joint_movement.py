@@ -89,53 +89,41 @@ while time.time() - start_time  <= run_time:
     if (dir_1 > 0) & (cur_jpos_1 > target_joint_1[1]):
         dir_1 = dir_1 * -1
         target_joint_1 = limit_joint_1 + np.random.rand() * limit_range_joint_1 # randomly change target
-        vel_joint_1 = np.random.uniform(vel_limit_joint_1[0], vel_limit_joint_1[1]) # randomly change velocity
-        for i in range(0,50): # publish zero command for 50 loops 
-            cmd = np.zeros((16))
-            r2py_ctl.pub_jr_command(cmd) 
-        
+        vel_joint_1 = np.random.uniform(vel_limit_joint_1[0], vel_limit_joint_1[1]) # randomly change velocity      
     if (dir_1 < 0) & (cur_jpos_1 < target_joint_1[0]):
         dir_1 = dir_1 * -1
         target_joint_1 = limit_joint_1 + np.random.rand() * limit_range_joint_1 # randomly change target
         vel_joint_1 = np.random.uniform(vel_limit_joint_1[0], vel_limit_joint_1[1]) # randomly change velocity
-        for i in range(0,50): # publish zero command for 50 loops 
-            cmd = np.zeros((16))
-            r2py_ctl.pub_jr_command(cmd) 
+
         
     if (dir_2 > 0) & (cur_jpos_2 > target_joint_2[1]):
         dir_2 = dir_2 * -1
         target_joint_2 = limit_joint_2 + np.random.rand() * limit_range_joint_2 # randomly change target
         vel_joint_2 = np.random.uniform(vel_limit_joint_2[0], vel_limit_joint_2[1]) # randomly change velocity
-        for i in range(0,50): # publish zero command for 50 loops 
-            cmd = np.zeros((16))
-            r2py_ctl.pub_jr_command(cmd) 
     if (dir_2 < 0) & (cur_jpos_2 < target_joint_2[0]):
         dir_2 = dir_2 * -1
         target_joint_2 = limit_joint_2 + np.random.rand() * limit_range_joint_2 # randomly change target
         vel_joint_2 = np.random.uniform(vel_limit_joint_2[0], vel_limit_joint_2[1]) # randomly change velocity
-        for i in range(0,50): # publish zero command for 50 loops 
-            cmd = np.zeros((16))
-            r2py_ctl.pub_jr_command(cmd) 
+
         
     if (dir_3 > 0) & (cur_jpos_3 > target_joint_3[1]):
         dir_3 = dir_3 * -1
         target_joint_3 = limit_joint_3 + np.random.rand() * limit_range_joint_3 # randomly change target
         vel_joint_3 = np.random.uniform(vel_limit_joint_3[0], vel_limit_joint_3[1]) # randomly change velocity
-        for i in range(0,50): # publish zero command for 50 loops 
-            cmd = np.zeros((16))
-            r2py_ctl.pub_jr_command(cmd) 
     if (dir_3 < 0) & (cur_jpos_3 < target_joint_3[0]):
         dir_3 = dir_3 * -1
         target_joint_3 = limit_joint_3 + np.random.rand() * limit_range_joint_3 # randomly change target
         vel_joint_3 = np.random.uniform(vel_limit_joint_3[0], vel_limit_joint_3[1]) # randomly change velocity
-        for i in range(0,50): # publish zero command for 50 loops 
-            cmd = np.zeros((16))
-            r2py_ctl.pub_jr_command(cmd) 
+
             
     cmd = np.zeros((16))
-    cmd[1] = dir_1 * vel_joint_1 * 1e-3
-    cmd[2] = dir_2 * vel_joint_2 * 1e-3
-    cmd[3] = dir_3 * vel_joint_3 * 1e-3
+    cmd[1] = dir_1 * np.clip(np.abs(target_joint_1 - cur_jpos_1), 0.2*Deg2Rad, vel_joint_1) * 1e-3
+    cmd[2] = dir_2 * np.clip(np.abs(target_joint_2 - cur_jpos_2), 0.2*Deg2Rad, vel_joint_2) * 1e-3
+    cmd[3] = dir_3 * np.clip(np.abs(target_joint_3 - cur_jpos_3), 0.001, vel_joint_3) * 1e-3
+    
+    # cmd[1] = dir_1 * vel_joint_1 * 1e-3  # old code
+    # cmd[2] = dir_2 * vel_joint_2 * 1e-3  # old code
+    # cmd[3] = dir_3 * vel_joint_3 * 1e-3  # old code
     r2py_ctl.pub_jr_command(cmd) 
         
     
