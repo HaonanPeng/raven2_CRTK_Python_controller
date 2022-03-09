@@ -18,3 +18,12 @@ python run_r2_keyboard_controller.py
 ```
 
 Please notice that the current version only allows one key input at a time for stability.
+
+To change velocity, please go to 'run_r2_keyboard_controller.py', velocity variable of eah joint is at the beginning of the code.
+To change maximum allowed velocity, please go to 'raven_py_controller.py' and find the line:
+
+```
+self.max_jr = np.array([5*Deg2Rad, 5*Deg2Rad, 0.02, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad, 15*Deg2Rad])
+```
+
+The first entry is the maximum velocity of joint 1, so on and so forth. However, entries after 8th does not make sense because RAVEN only has 7 joints.
