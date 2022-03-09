@@ -20,6 +20,7 @@ python run_r2_keyboard_controller.py
 Please notice that the current version only allows one key input at a time for stability.
 
 To change velocity, please go to 'run_r2_keyboard_controller.py', velocity variable of eah joint is at the beginning of the code.
+
 To change maximum allowed velocity, please go to 'raven_py_controller.py' and find the line:
 
 ```
