@@ -37,6 +37,10 @@ limit_joint_1 = np.array([25.0, 55.0]) * Deg2Rad
 limit_joint_2 = np.array([75.0, 115.0]) * Deg2Rad
 limit_joint_3 = np.array([0.33, 0.39])
 
+velocity_joint_1 = 3 # degree/s
+velocity_joint_2 = 3 # degree/s
+velocity_joint_3 = 0.01 # m/s
+
 # This will be the range of how joint target can be changed 
 limit_range_joint_1 = np.array([10, -10]) * Deg2Rad
 limit_range_joint_2 = np.array([10, -10]) * Deg2Rad

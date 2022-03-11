@@ -31,10 +31,7 @@ author Haonan Peng, Yun-Hsuan Su, Andrew Lewis,
 # import rospy
 import numpy as np
 
-# def print_ROS_INFO (msg):
-#     rospy.loginfo("[r2_py_controller]: " + msg)
 
-#     return None
 
 def rand_from_range(rand_range):
     rand_num = rand_range[0] + np.random.rand() * (rand_range[0] - rand_range[1])

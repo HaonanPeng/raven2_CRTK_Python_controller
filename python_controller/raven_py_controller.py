@@ -230,8 +230,8 @@ class raven2_py_controller():
 
         target_jpos = target_jpos[1:]  # This is to meet the format of CRTK, where joint 1 is at index 0
         
-        target_jpos_1 = target_jpos[0] * Deg2Rad
-        target_jpos_2 = target_jpos[1] * Deg2Rad
+        target_jpos_1 = target_jpos[0] 
+        target_jpos_2 = target_jpos[1] 
         target_jpos_3 = target_jpos[2]
         
         moving = True
