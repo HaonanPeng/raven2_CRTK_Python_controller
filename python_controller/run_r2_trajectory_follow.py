@@ -6,16 +6,15 @@ Created on Thu Mar 10 15:44:22 2022
 """
 import sys
 import time
-import utils
 import rospy
 import numpy as np
 import raven_py_controller
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
-smooth_factor = 100 # [IMPT]: Must be positive. This is the factor to prevent the control command to be unstable. A larger factor could result in more smooth control commands, but the accuracy of following can be also decreased.
+smooth_factor = 200 # [IMPT]: Must be positive. This is the factor to prevent the control command to be unstable. A larger factor could result in more smooth control commands, but the accuracy of following can be also decreased.
 
-show_plot = True # If ture, a sub-realtime plot will be shown when running
+show_plot = False # If ture, a sub-realtime plot will be shown when running
 
 
 
@@ -31,11 +30,11 @@ time_last_record = 0
 time_last_plot = 0
 
 limit_joint_1 = np.array([24.0, 56.0]) * Deg2Rad
-limit_joint_2 = np.array([74.0, 116.0]) * Deg2Rad
+limit_joint_2 = np.array([74.0, 128.0]) * Deg2Rad # should  be 115 deg
 limit_joint_3 = np.array([0.32, 0.40])
 
-velocity_joint_1 = 3 # max degree/s
-velocity_joint_2 = 3 # max degree/s
+velocity_joint_1 = 3.0 * Deg2Rad # max degree/s
+velocity_joint_2 = 3.0 * Deg2Rad # max degree/s
 velocity_joint_3 = 0.01 # max m/s
 
 traj = np.loadtxt(trajctory_file,  delimiter=',')
@@ -81,17 +80,28 @@ while moving == True:
     pos_cur = np.array([r2py_ctl.measured_jpos[0],r2py_ctl.measured_jpos[1],r2py_ctl.measured_jpos[2]])
     idx = np.argmin(np.square(traj[:,0]-pos_cur[0]) + np.square(traj[:,1]-pos_cur[1]) + np.square(traj[:,2]-pos_cur[2]))
     pos_tar = traj[idx+smooth_factor]
+    #print(idx)
     
     cmd = np.zeros((16))
-    cmd[1] = np.clip(pos_tar[0] - pos_cur[0], -velocity_joint_1, velocity_joint_1)
-    if np.abs(cmd[1] * Deg2Rad) < 0.2:
+    cmd[1] = np.clip(1.0*(pos_tar[0] - pos_cur[0]), -velocity_joint_1, velocity_joint_1)
+    cmd[2] = np.clip(1.0*(pos_tar[1] - pos_cur[1]), -velocity_joint_2, velocity_joint_2)
+    cmd[3] = np.clip(1.0*(pos_tar[2] - pos_cur[2]), -velocity_joint_3, velocity_joint_3)
+    print('------------------------------')
+    print(cmd[1] * Rad2Deg)
+    print(cmd[2] * Rad2Deg)
+    print(cmd[3])
+    if np.abs(cmd[1] * Rad2Deg) < 0.2:
         cmd[1] = 0
-    cmd[2] = np.clip(pos_tar[1] - pos_cur[1], -velocity_joint_2, velocity_joint_2)
-    if np.abs(cmd[2] * Deg2Rad) < 0.2:
+
+    if np.abs(cmd[2] * Rad2Deg) < 0.2:
         cmd[2] = 0
-    cmd[3] = np.clip(pos_tar[2] - pos_cur[2], -limit_joint_3, limit_joint_3)
+
     if np.abs(cmd[3]) < 0.002:
         cmd[3] = 0
+
+    print(cmd)
+    r2py_ctl.pub_jr_command(cmd * 1e-3)     
+
     if show_plot == True:
         if time.time()-time_last_record > intv_record:
             rec_jpos = np.append(rec_jpos, np.array([pos_cur]), axis = 0)

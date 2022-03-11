@@ -31,7 +31,6 @@ author Haonan Peng, Yun-Hsuan Su, Andrew Lewis,
 """
 
 import time
-import utils
 import rospy
 import numpy as np
 import raven_runtime_monitor
