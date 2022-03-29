@@ -30,7 +30,7 @@ author Haonan Peng, Yun-Hsuan Su, Andrew Lewis,
 
 import tty, sys, termios
 import time
-import utils_r2_py_controller as utils
+import utils_r2_keyboard_controller as utils
 import rospy
 import numpy as np
 import raven_py_controller
