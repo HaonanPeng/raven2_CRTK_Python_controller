@@ -1,7 +1,7 @@
 # raven2_CRTK_Python_controller
 This is a controller for RAVEN II surgical robot, based on CRTK API, using Python
 
-***Please notice that this Python controller for RAVEN is still under development and the safety of using it has not been fully tested. If you want to use it, please contact me at penghaonan1993@gmail.com and I an glad to help!***
+***Please notice that this Python controller for RAVEN is still under development and the safety of using it has not been fully tested. If you want to use it, please contact me at penghaonan1993@gmail.com and I am glad to help!***
 
 <p align="center">
   <img src="https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/fig/sum_raven_crtk_py.png" width="750" height="369">
