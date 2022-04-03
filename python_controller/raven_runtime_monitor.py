@@ -86,19 +86,19 @@ class raven2_runtime_monitor():
 
         # Subscriber and publisher of robot operation state
         topic = "/" + self.robot_name + "/operating_state"
-        self.__subscriber_operating_state = rospy.Subscriber(topic, crtk_msgs.msg.operating_state, self.__callback_operating_state)
+        self.__subscriber_operating_state = rospy.Subscriber(topic, crtk_msgs.msg.operating_state, self.__callback_operating_state, queue_size=1, buff_size=2**24)
 
         # Subscribers of joint state and cartisian position
         topic = "/" + self.robot_name + "/measured_cp"
-        self.__subscriber_measured_cp = rospy.Subscriber(topic, geometry_msgs.msg.TransformStamped, self.__callback_measured_cp)
+        self.__subscriber_measured_cp = rospy.Subscriber(topic, geometry_msgs.msg.TransformStamped, self.__callback_measured_cp, queue_size=1, buff_size=2**24)
 
         # topic = "/" + self.robot_name + "/measured_js" # [IMPT] this should be the usual case
         topic = "/arm2/measured_js" # [IMPT] This line is because the RAVEN that I use has a mismatch that the arm1's jpos is published on arm2
-        self.__subscriber_measured_js = rospy.Subscriber(topic, sensor_msgs.msg.JointState, self.__callback_measured_jp)
+        self.__subscriber_measured_js = rospy.Subscriber(topic, sensor_msgs.msg.JointState, self.__callback_measured_jp, queue_size=1, buff_size=2**24)
         
         # Subscribers of joint state and cartisian position
         topic = "/" + self.robot_name + "/servo_jr"
-        self.__subscriber_servo_jr = rospy.Subscriber(topic, sensor_msgs.msg.JointState, self.__callback_servo_jr)
+        self.__subscriber_servo_jr = rospy.Subscriber(topic, sensor_msgs.msg.JointState, self.__callback_servo_jr, queue_size=1, buff_size=2**24)
 
         return None
 
@@ -161,9 +161,13 @@ class raven2_runtime_monitor():
         working = True
         
         
-        
+        test_time =0
         while working:
-            if rospy.get_time() - self.time_last_output >= self.intv_output:
+            #if rospy.get_time() - self.time_last_output >= self.intv_output:
+            if working == True:
+                self.time_last_output = rospy.get_time()
+                #print(rospy.get_time()-test_time)
+                #test_time = rospy.get_time()
                 # Fig 1: 3D traj in joint space
                 fig1 = plt.figure(1)
                 fig1.clf()
@@ -179,21 +183,21 @@ class raven2_runtime_monitor():
                 plt.title('3D traj in joint space')
                 
                 # Fig 2: 2D traj in joint space
-                fig2 = plt.figure(2)
-                fig2.clf()
-                plt.subplot(3, 1, 1)
-                plt.plot(rec_jpos[1:,0], rec_jpos[1:,1]*Rad2Deg)
-                plt.ylabel('joint 1(Deg)')
-                plt.title('joint trajs')
-                
-                plt.subplot(3, 1, 2)
-                plt.plot(rec_jpos[1:,0], rec_jpos[1:,2]*Rad2Deg)
-                plt.ylabel('joint 2(Deg)')
-                
-                plt.subplot(3, 1, 3)
-                plt.plot(rec_jpos[1:,0], rec_jpos[1:,3])
-                plt.ylabel('joint 3(m)')
-                plt.xlabel('time(s)')
+	        fig2 = plt.figure(2)
+	        fig2.clf()
+	        plt.subplot(3, 1, 1)
+	        plt.plot(rec_jpos[1:,0], rec_jpos[1:,1]*Rad2Deg)
+	        plt.ylabel('joint 1(Deg)')
+	        plt.title('joint trajs')
+	        
+	        plt.subplot(3, 1, 2)
+	        plt.plot(rec_jpos[1:,0], rec_jpos[1:,2]*Rad2Deg)
+	        plt.ylabel('joint 2(Deg)')
+	        
+	        plt.subplot(3, 1, 3)
+	        plt.plot(rec_jpos[1:,0], rec_jpos[1:,3])
+	        plt.ylabel('joint 3(m)')
+	        plt.xlabel('time(s)')
                 
                 # Fig 3: joint jr motion command
                 rec_control_jr = self.rec_control_jr
@@ -212,9 +216,10 @@ class raven2_runtime_monitor():
                 plt.plot(rec_control_jr[1:,0], rec_control_jr[1:,3]*1e3)
                 plt.ylabel('joint 3(m/s)')
                 plt.xlabel('time(s)')
-                
                 plt.show(block = False)
-                plt.pause(self.intv_output)
+                
+                #plt.pause(np.maximum(0.01, self.intv_output-(rospy.get_time() - self.time_last_output)))
+                plt.pause(0.01)
                 
         
         return None

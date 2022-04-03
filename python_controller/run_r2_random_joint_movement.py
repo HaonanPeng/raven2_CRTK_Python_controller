@@ -20,7 +20,7 @@ author Haonan Peng, Yun-Hsuan Su, Andrew Lewis,
 """
 
 import time
-import utils
+#import utils
 import rospy
 import numpy as np
 import raven_py_controller
@@ -143,7 +143,7 @@ while time.time() - start_time  <= run_time:
     r2py_ctl.pub_jr_command(cmd) 
 
     after_switching_joint_1 += 1
-    print(after_switching_joint_1)
+    #print(after_switching_joint_1)
     after_switching_joint_2 += 1
     after_switching_joint_3 += 1
         
