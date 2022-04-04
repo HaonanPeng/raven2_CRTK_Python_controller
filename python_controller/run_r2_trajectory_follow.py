@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Mar 10 15:44:22 2022
-
 @author: 75678
 """
 import sys
@@ -30,7 +29,7 @@ time_last_record = 0
 time_last_plot = 0
 
 limit_joint_1 = np.array([24.0, 56.0]) * Deg2Rad
-limit_joint_2 = np.array([74.0, 128.0]) * Deg2Rad # should  be 115 deg
+limit_joint_2 = np.array([74.0, 115.0]) * Deg2Rad # should  be 115 deg
 limit_joint_3 = np.array([0.32, 0.40])
 
 velocity_joint_1 = 3.0 * Deg2Rad # max degree/s
