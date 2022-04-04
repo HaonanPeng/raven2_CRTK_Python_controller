@@ -7,10 +7,11 @@ Created on Tue Oct 26 12:00:54 2021
 
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from utils_transform import Trans
 
 scale_x = [30, 50] # joint 1, in deg
-scale_y = [75, 115] # joint 2, in deg
+scale_y = [75, 105] # joint 2, in deg
 scale_z = [0.33, 0.39] # joint 3, in m
 
 file_name = 'generated_trajs/zigzag_traj_xdir.csv'
@@ -124,12 +125,25 @@ traj[:,1] = traj[:,1] * Deg2Rad
 np.savetxt(file_name, traj[:,0:3], delimiter=',')
         
 print(np.shape(traj))
-fig = plt.figure()
-ax = plt.axes(projection='3d')
-ax.plot3D(traj[:,0] * Rad2Deg, traj[:,1] * Rad2Deg, traj[:,2])
-ax.set_xlabel('Joint 1 (deg)')
-ax.set_ylabel('Joint 2 (deg)')
-ax.set_zlabel('Joint 3 (m)')
-plt.title('Sparcity- Joint 1: ' + str(scar_x) + ' Joint 2: ' + str(scar_y) + ' Joint 3: ' + str(scar_z))
+
+#fig = plt.figure()
+#ax = plt.axes(projection='3d')
+#ax.plot3D(traj[:,0] * Rad2Deg, traj[:,1] * Rad2Deg, traj[:,2])
+#ax.set_xlabel('Joint 1 (deg)')
+#ax.set_ylabel('Joint 2 (deg)')
+#ax.set_zlabel('Joint 3 (m)')
+#plt.title('Sparcity- Joint 1: ' + str(scar_x) + ' Joint 2: ' + str(scar_y) + ' Joint 3: ' + str(scar_z))
+#plt.savefig(file_name[:-3] + 'png')
+
+fig1 = plt.figure(1)
+fig1.clf()
+ax1 = fig1.add_subplot(111, projection='3d')
+#ax1 = fig1.gca(projection='3d')
+ax1.set_xlabel('joint 1(Deg)')
+ax1.set_ylabel('joint 2(Deg)')
+ax1.set_zlabel('joint 3(m)')
+ax1.plot(traj[:,0]*Rad2Deg, traj[:,1]*Rad2Deg, traj[:,2])      
+ax1.legend()
+plt.title('3D traj in joint space')
 plt.savefig(file_name[:-3] + 'png')
-        
+
