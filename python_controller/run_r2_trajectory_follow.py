@@ -60,6 +60,9 @@ if np.max(traj[:,2]) > limit_joint_3[1]:
     print('Joint 3 trajectory exceed max: ' + str(np.max(traj[:,2])) + ' m')
     sys.exit('Exiting')
 
+tail = np.ones((smooth_factor + 1, 3))
+traj = np.vstack((traj, tail))
+
 rospy.init_node('raven_trajectory_follower', anonymous=True)
 r2py_ctl = raven_py_controller.raven2_py_controller(name_space = ' ', robot_name = 'arm1', grasper_name = 'grasp1')
 r2py_ctl.pub_state_command('resume')
@@ -75,10 +78,18 @@ target_jpos[3] = traj[0,2]
 r2py_ctl.go_to_jr(target_jpos = target_jpos)
 print('Reach the start point, now follow the trajectory')
 
+idx_pre = 0
 moving = True
 while moving == True:
     pos_cur = np.array([r2py_ctl.measured_jpos[0],r2py_ctl.measured_jpos[1],r2py_ctl.measured_jpos[2]])
     idx = np.argmin(np.square(traj[:,0]-pos_cur[0]) + np.square(traj[:,1]-pos_cur[1]) + np.square(traj[:,2]-pos_cur[2]))
+    
+    if idx >= shape_traj[0]:
+        r2py_ctl.pub_state_command('pause')
+        sys.exit('Trajectory finished, existing')
+    if abs(idx - idx_pre) >= smooth_factor:
+        idx = idx + smooth_factor
+    
     pos_tar = traj[idx+smooth_factor]
     #print(idx)
     
@@ -101,6 +112,8 @@ while moving == True:
 
     print(cmd)
     r2py_ctl.pub_jr_command(cmd * 1e-3)     
+    
+    idx_pre = idx
 
     if show_plot == True:
         if time.time()-time_last_record > intv_record:
