@@ -11,7 +11,8 @@ import raven_py_controller
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
-smooth_factor = 200 # [IMPT]: Must be positive. This is the factor to prevent the control command to be unstable. A larger factor could result in more smooth control commands, but the accuracy of following can be also decreased.
+smooth_factor = 100 # [IMPT]: Must be positive. This is the factor to prevent the control command to be unstable. A larger factor could result in more smooth control commands, but the accuracy of following can be also decreased.
+max_step_dis = 50 # [IMPT]: Must be positive, this is the max distance when finding the nearest point in the target trajectory
 
 show_plot = False # If ture, a sub-realtime plot will be shown when running
 
@@ -83,11 +84,16 @@ while moving == True:
     pos_cur = np.array([r2py_ctl.measured_jpos[0],r2py_ctl.measured_jpos[1],r2py_ctl.measured_jpos[2]])
     idx = np.argmin(np.square(traj[:,0]-pos_cur[0]) + np.square(traj[:,1]-pos_cur[1]) + np.square(traj[:,2]-pos_cur[2]))
     
-    if idx >= shape_traj[0]:
+    if idx >= (shape_traj[0] - 500):
+        for i in range(0,2000):
+            cmd = np.zeros((16))
+            r2py_ctl.pub_jr_command(cmd * 1e-3) 
         r2py_ctl.pub_state_command('pause')
         sys.exit('Trajectory finished, existing')
-    if abs(idx - idx_pre) >= smooth_factor:
-        idx = idx + smooth_factor
+    if (idx - idx_pre) >= max_step_dis:
+        idx = idx + max_step_dis
+    elif (idx - idx_pre) <= 0:
+        idx = idx + 1
     
     pos_tar = traj[idx+smooth_factor]
     #print(idx)
@@ -97,6 +103,7 @@ while moving == True:
     cmd[2] = np.clip(1.0*(pos_tar[1] - pos_cur[1]), -velocity_joint_2, velocity_joint_2)
     cmd[3] = np.clip(1.0*(pos_tar[2] - pos_cur[2]), -velocity_joint_3, velocity_joint_3)
     print('------------------------------')
+    print(idx)
     print(cmd[1] * Rad2Deg)
     print(cmd[2] * Rad2Deg)
     print(cmd[3])
@@ -109,7 +116,7 @@ while moving == True:
     if np.abs(cmd[3]) < 0.002:
         cmd[3] = 0
 
-    print(cmd)
+    #print(cmd)
     r2py_ctl.pub_jr_command(cmd * 1e-3)     
     
     idx_pre = idx
