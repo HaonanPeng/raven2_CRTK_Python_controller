@@ -45,3 +45,10 @@ roslaunch raven_2 raven_2.launch
 ```
 
 If you are also using external joint encoders that need to be calibrated during initialization, please do not press the silver button for now.
+
+## Start External Joint Encoder
+If you are using the external joint encoders, please go to 'joint_encoder/'  and run:
+```
+python run_r2_joint_encodersIII_pub.py
+```
+After running this, press the silver button to start RAVEN homing. The encoder code will allow 60 second for RAVEN homing. After this, the encoders will be calibrated according to the Mechanical limit that RAVEN has reached during homing.
