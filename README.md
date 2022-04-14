@@ -58,7 +58,7 @@ After this, the calibrated external joint poses will be published to ROS topic '
 ## Start ROS Bag Recording
 First, make sure 'python_controller/r2_enc_CRTK_recorder.launch' is with raven2.launch in the RAVEN CRTK folder. Then, ROS bag recording can be started by:
 ```
-rosluanch raven2 r2_enc_CRTK_recorder.launch
+roslaunch raven2 r2_enc_CRTK_recorder.launch
 ```
 This will record CRTK joint poses, ravenstate and external joint poses. The rate of ravenstate and CRTK will be toggled from 1000Hz to 100Hz to avoid huge ROS bags. Recording can be stopped by Ctrl + C
 
