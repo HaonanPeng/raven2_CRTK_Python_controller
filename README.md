@@ -36,6 +36,11 @@ self.max_jr = np.array([5*Deg2Rad, 5*Deg2Rad, 0.02, 15*Deg2Rad, 15*Deg2Rad, 15*D
 The first entry is the maximum velocity of joint 1, so on and so forth. However, entries after 8th does not make sense because RAVEN only has 7 joints.
 
 # General Workflow of Joint-level Control and Data recording
+
+<p align="center">
+  <img src="https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/fig/exp_recording_workflow.png" width="750" height="369">
+</p>
+
 ## Start RAVEN
 For details about starting RAVEN, please refer to this [Quick Start Guide](https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/doc/UW-BRL%20RAVEN%20Quick-Start%20Guide%20-%20Google%20Docs.pdf). **And please do not forget to manually move all the joint a little bit before pressing the silver button to 'bump the encoders'.**
 
