@@ -52,3 +52,15 @@ If you are using the external joint encoders, please go to 'joint_encoder/'  and
 python run_r2_joint_encodersIII_pub.py
 ```
 After running this, press the silver button to start RAVEN homing. The encoder code will allow 60 second for RAVEN homing. After this, the encoders will be calibrated according to the Mechanical limit that RAVEN has reached during homing.
+
+After this, the calibrated external joint poses will be published to ROS topic 'ext_jpos'.
+
+## Start ROS Bag Recording
+First, make sure 'python_controller/r2_enc_CRTK_recorder.launch' is with raven2.launch in the RAVEN CRTK folder. Then, ROS bag recording can be started by:
+```
+rosluanch raven2 r2_enc_CRTK_recorder.launch
+```
+Recording can be stopped by Ctrl + C
+
+## Start Controlling RAVEN
+There are multiple ways to control RAVEN with RAVEN CRTK Python Controller.
