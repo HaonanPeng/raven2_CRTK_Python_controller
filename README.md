@@ -63,7 +63,11 @@ rosluanch raven2 r2_enc_CRTK_recorder.launch
 This will record CRTK joint poses, ravenstate and external joint poses. The rate of ravenstate and CRTK will be toggled from 1000Hz to 100Hz to avoid huge ROS bags. Recording can be stopped by Ctrl + C
 
 ## Start Runtime Monitor
-
+If real-time monitoring of joint poses and joint motion commands is needed, the Runtime Monitor of RAVEN can be started by:
+```
+python run_r2_runtime_monitor.py
+```
+However, please notice that the runtime monitor only has refreshing rate of ~0.6Hz. 
 
 ## Start Controlling RAVEN
 There are multiple ways to control RAVEN with RAVEN CRTK Python Controller.
@@ -91,3 +95,6 @@ Let RAVEN go to a target joint pose:
 ```
 python run_r2_goto.py
 ```
+## Extract Data from ROS Bags
+
+
