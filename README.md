@@ -60,7 +60,34 @@ First, make sure 'python_controller/r2_enc_CRTK_recorder.launch' is with raven2.
 ```
 rosluanch raven2 r2_enc_CRTK_recorder.launch
 ```
-Recording can be stopped by Ctrl + C
+This will record CRTK joint poses, ravenstate and external joint poses. The rate of ravenstate and CRTK will be toggled from 1000Hz to 100Hz to avoid huge ROS bags. Recording can be stopped by Ctrl + C
+
+## Start Runtime Monitor
+
 
 ## Start Controlling RAVEN
 There are multiple ways to control RAVEN with RAVEN CRTK Python Controller.
+
+1) Keyboard controller
+Manually controlling RAVEN based on joint-level, using keyboard:
+```
+python run_r2_keyboard_controller.py
+```
+
+2) Random joint movement
+Let RAVEN joints moving randomly:
+```
+python run_r2_random_joint_movement.py
+```
+
+3) Trajectory following
+Let RAVEN follow a pre-defined trajectory:
+```
+python run_r2_trajectory_follow.py
+```
+
+4) Go to a target joint pose
+Let RAVEN go to a target joint pose:
+```
+python run_r2_goto.py
+```
