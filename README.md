@@ -118,11 +118,28 @@ Then, on the Mantis PC, open the file on desktop named 'ipsettings.inf' and chan
 
 On the Mantis desktop, start "Mantis_Client.exe" and "GUI_Server.exe". Then you should see the cables of Mantis are tightened. Before using Mantis, the controllers need to be calibrated by holding it and double-cliking the button on the bottom.
 
+<p align="center">
+  <img src="https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/fig/mantis_calibrating.png" width="750" height="369">
+</p>
+
 On the GUI, enter pin "123" and click "enter", you should see the following window. Please pay attention to the scale. Normally, it would be safer to start with a small scale such as 0.1.
+
+<p align="center">
+  <img src="https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/fig/mantis_scale.png" width="750" height="369">
+</p>
 
 Then, go to "Engineer" tag and choose the IP adress that you just added. Check "Use ITP Reference Frame" and click "Start". If everything is fine, you should see the terminal that you start RAVEN on RAVEN PC is printing '.'. Then you should be able to control RAVEN using Mantis.
 
+<p align="center">
+  <img src="https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/fig/mantis_change_ip_start.png" width="750" height="369">
+</p>
+
 Please also notice that if you choose "localhost" IP address 127.0.0.1, you could not control any real RAVEN, but instead, on Mantis PC, you can open "visualizaer.exe" to check the motion of the controller.
+
+<p align="center">
+  <img src="https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/fig/mantis_local_visualizer.png" width="750" height="369">
+</p>
+
 
 
 
