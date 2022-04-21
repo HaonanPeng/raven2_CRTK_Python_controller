@@ -16,9 +16,9 @@ max_step_dis = 50 # [IMPT]: Must be positive, this is the max distance when find
 
 show_plot = False # If ture, a sub-realtime plot will be shown when running
 
+trajctory_file = 'trajectory/zigzag_traj_dir_xyz_0.3333.csv'
 
-
-trajctory_file = 'trajectory/zigzag_traj_xdir.csv'
+start_time = time.time()
 
 Deg2Rad = np.pi / 180.0
 Rad2Deg = 180.0 / np.pi
@@ -29,9 +29,9 @@ intv_plot = 2
 time_last_record = 0
 time_last_plot = 0
 
-limit_joint_1 = np.array([24.0, 56.0]) * Deg2Rad
-limit_joint_2 = np.array([74.0, 115.0]) * Deg2Rad # should  be 115 deg
-limit_joint_3 = np.array([0.32, 0.40])
+limit_joint_1 = np.array([15.0, 70.0]) * Deg2Rad
+limit_joint_2 = np.array([50.0, 115.0]) * Deg2Rad # should  be 115 deg
+limit_joint_3 = np.array([0.32, 0.43])
 
 velocity_joint_1 = 3.0 * Deg2Rad # max degree/s
 velocity_joint_2 = 3.0 * Deg2Rad # max degree/s
@@ -88,7 +88,15 @@ while moving == True:
         for i in range(0,2000):
             cmd = np.zeros((16))
             r2py_ctl.pub_jr_command(cmd * 1e-3) 
+
+        target_jpos = np.zeros((16))
+        target_jpos[1] = 30 * Deg2Rad
+        target_jpos[2] = 75 * Deg2Rad
+        target_jpos[3] = 0.300
+        r2py_ctl.go_to_jr(target_jpos = target_jpos)        
         r2py_ctl.pub_state_command('pause')
+        print('Trajectory following finished, time used(sec):')
+        print(time.time()-start_time)
         sys.exit('Trajectory finished, existing')
     if (idx - idx_pre) >= max_step_dis:
         idx = idx + max_step_dis

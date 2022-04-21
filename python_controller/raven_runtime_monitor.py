@@ -83,22 +83,22 @@ class raven2_runtime_monitor():
 
     # setup ros publishers and subscribers
     def __init_pub_sub(self):
-
+        buffer_size = 2**12
         # Subscriber and publisher of robot operation state
         topic = "/" + self.robot_name + "/operating_state"
-        self.__subscriber_operating_state = rospy.Subscriber(topic, crtk_msgs.msg.operating_state, self.__callback_operating_state, queue_size=1, buff_size=2**24)
+        self.__subscriber_operating_state = rospy.Subscriber(topic, crtk_msgs.msg.operating_state, self.__callback_operating_state, queue_size=1, buff_size=buffer_size)
 
         # Subscribers of joint state and cartisian position
         topic = "/" + self.robot_name + "/measured_cp"
-        self.__subscriber_measured_cp = rospy.Subscriber(topic, geometry_msgs.msg.TransformStamped, self.__callback_measured_cp, queue_size=1, buff_size=2**24)
+        self.__subscriber_measured_cp = rospy.Subscriber(topic, geometry_msgs.msg.TransformStamped, self.__callback_measured_cp, queue_size=1, buff_size=buffer_size)
 
         # topic = "/" + self.robot_name + "/measured_js" # [IMPT] this should be the usual case
         topic = "/arm2/measured_js" # [IMPT] This line is because the RAVEN that I use has a mismatch that the arm1's jpos is published on arm2
-        self.__subscriber_measured_js = rospy.Subscriber(topic, sensor_msgs.msg.JointState, self.__callback_measured_jp, queue_size=1, buff_size=2**24)
+        self.__subscriber_measured_js = rospy.Subscriber(topic, sensor_msgs.msg.JointState, self.__callback_measured_jp, queue_size=1, buff_size=buffer_size)
         
         # Subscribers of joint state and cartisian position
         topic = "/" + self.robot_name + "/servo_jr"
-        self.__subscriber_servo_jr = rospy.Subscriber(topic, sensor_msgs.msg.JointState, self.__callback_servo_jr, queue_size=1, buff_size=2**24)
+        self.__subscriber_servo_jr = rospy.Subscriber(topic, sensor_msgs.msg.JointState, self.__callback_servo_jr, queue_size=1, buff_size=buffer_size)
 
         return None
 

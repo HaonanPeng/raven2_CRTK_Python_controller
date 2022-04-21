@@ -25,7 +25,7 @@ import rospy
 import numpy as np
 import raven_py_controller
 
-run_time = 240.0 
+run_time = 300.0 
 
 switch_smooth_factor = 1000.0 #[IMPT]: This is the smooth factor, it must be positive, and non-zero. Increase this factor will decrease the acceleration of joints after switching direction
 
@@ -150,5 +150,9 @@ while time.time() - start_time  <= run_time:
     
     
 
-
+target_jpos = np.zeros((16))
+target_jpos[1] = 30 * Deg2Rad
+target_jpos[2] = 75 * Deg2Rad
+target_jpos[3] = 0.300
+r2py_ctl.go_to_jr(target_jpos = target_jpos)
 r2py_ctl.pub_state_command('pause')
