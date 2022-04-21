@@ -103,6 +103,12 @@ python run_r2_goto.py
 ## Extract Data from ROS Bags
 
 # Manually Controlling RAVEN Using Mantis Leader Controller
+
+<p align="center">
+  <img src="https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/fig/mantis_controller.jpg" width="633" height="476">
+</p>
+
+
 RAVEN can be teleoperated manually using the Mantis controller. In order to use this, first on the RAVEN PC, checkand record the local IP address by:
 ```
 ifconfig
