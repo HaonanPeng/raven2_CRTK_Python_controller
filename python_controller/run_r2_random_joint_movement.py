@@ -33,18 +33,18 @@ Deg2Rad = np.pi / 180.0
 Rad2Deg = 180.0 / np.pi
 
 # joint limits in degree and meter(joint 3), this is the soft limit of this controller
-limit_joint_1 = np.array([25.0, 55.0]) * Deg2Rad
-limit_joint_2 = np.array([75.0, 115.0]) * Deg2Rad
-limit_joint_3 = np.array([0.33, 0.39])
+limit_joint_1 = np.array([20.0, 60.0]) * Deg2Rad
+limit_joint_2 = np.array([55.0, 110.0]) * Deg2Rad
+limit_joint_3 = np.array([0.33, 0.42])
 
 velocity_joint_1 = 3 # degree/s
 velocity_joint_2 = 3 # degree/s
 velocity_joint_3 = 0.01 # m/s
 
 # This will be the range of how joint target can be changed 
-limit_range_joint_1 = np.array([10, -10]) * Deg2Rad
+limit_range_joint_1 = np.array([5, -5]) * Deg2Rad
 limit_range_joint_2 = np.array([10, -10]) * Deg2Rad
-limit_range_joint_3 = np.array([0.01, -0.01])
+limit_range_joint_3 = np.array([0.02, -0.02])
 
 vel_limit_joint_1 = np.array([1.5, 2.5]) * Deg2Rad
 vel_limit_joint_2 = np.array([1.5, 2.5]) * Deg2Rad

@@ -13,12 +13,12 @@ import matplotlib.pyplot as plt
 
 smooth_factor = 100 # [IMPT]: Must be positive. This is the factor to prevent the control command to be unstable. A larger factor could result in more smooth control commands, but the accuracy of following can be also decreased.
 max_step_dis = 50 # [IMPT]: Must be positive, this is the max distance when finding the nearest point in the target trajectory
+min_step_dis = 20 # [IMPT]: Must be positive, this is the min distance when finding the nearest point in the target trajectory
+spd_factor = 2.0 # [IMPT]: Must be positive
 
 show_plot = False # If ture, a sub-realtime plot will be shown when running
 
-trajctory_file = 'trajectory/zigzag_traj_dir_xyz_0.3333.csv'
-
-start_time = time.time()
+trajctory_file = 'trajectory/zigzag_traj_dir_x_0.3333.csv'
 
 Deg2Rad = np.pi / 180.0
 Rad2Deg = 180.0 / np.pi
@@ -78,13 +78,16 @@ target_jpos[3] = traj[0,2]
 r2py_ctl.go_to_jr(target_jpos = target_jpos)
 print('Reach the start point, now follow the trajectory')
 
+start_time = time.time()
 idx_pre = 0
 moving = True
 while moving == True:
     pos_cur = np.array([r2py_ctl.measured_jpos[0],r2py_ctl.measured_jpos[1],r2py_ctl.measured_jpos[2]])
     idx = np.argmin(np.square(traj[:,0]-pos_cur[0]) + np.square(traj[:,1]-pos_cur[1]) + np.square(traj[:,2]-pos_cur[2]))
     
-    if idx >= (shape_traj[0] - 500):
+    if idx >= (shape_traj[0] - 200):
+        end_time = time.time()-start_time
+
         for i in range(0,2000):
             cmd = np.zeros((16))
             r2py_ctl.pub_jr_command(cmd * 1e-3) 
@@ -96,20 +99,20 @@ while moving == True:
         r2py_ctl.go_to_jr(target_jpos = target_jpos)        
         r2py_ctl.pub_state_command('pause')
         print('Trajectory following finished, time used(sec):')
-        print(time.time()-start_time)
+        print(end_time)
         sys.exit('Trajectory finished, existing')
     if (idx - idx_pre) >= max_step_dis:
         idx = idx + max_step_dis
-    elif (idx - idx_pre) <= 0:
-        idx = idx + 1
+    elif (idx - idx_pre) <= min_step_dis:
+        idx = idx + min_step_dis
     
     pos_tar = traj[idx+smooth_factor]
     #print(idx)
     
     cmd = np.zeros((16))
-    cmd[1] = np.clip(1.0*(pos_tar[0] - pos_cur[0]), -velocity_joint_1, velocity_joint_1)
-    cmd[2] = np.clip(1.0*(pos_tar[1] - pos_cur[1]), -velocity_joint_2, velocity_joint_2)
-    cmd[3] = np.clip(1.0*(pos_tar[2] - pos_cur[2]), -velocity_joint_3, velocity_joint_3)
+    cmd[1] = np.clip(spd_factor*(pos_tar[0] - pos_cur[0]), -velocity_joint_1, velocity_joint_1)
+    cmd[2] = np.clip(spd_factor*(pos_tar[1] - pos_cur[1]), -velocity_joint_2, velocity_joint_2)
+    cmd[3] = np.clip(spd_factor*(pos_tar[2] - pos_cur[2]), -velocity_joint_3, velocity_joint_3)
     print('------------------------------')
     print(idx)
     print(cmd[1] * Rad2Deg)
@@ -121,7 +124,7 @@ while moving == True:
     if np.abs(cmd[2] * Rad2Deg) < 0.2:
         cmd[2] = 0
 
-    if np.abs(cmd[3]) < 0.002:
+    if np.abs(cmd[3]) < 0.001:
         cmd[3] = 0
 
     #print(cmd)
