@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from utils_transform import Trans
 
-traj_type = "dir_xy"
+traj_type = "dir_xz"
 scar_x = 0
 scar_y = 0.3333
 scar_z = 0.3333
@@ -136,6 +136,36 @@ if traj_type == 'dir_x':
     scale_z = [0.5*(limit_joint_3[1]+limit_joint_3[0]) - 0.5*factor_edge*(limit_joint_3[1]-limit_joint_3[0]), 
                 0.5*(limit_joint_3[1]+limit_joint_3[0]) + 0.5*factor_edge*(limit_joint_3[1]-limit_joint_3[0])] 
     traj = traj
+
+if traj_type == 'dir_y':
+    scale_x = [0.5*(limit_joint_1[1]+limit_joint_1[0]) - 0.5*factor_edge*(limit_joint_1[1]-limit_joint_1[0]), 
+                0.5*(limit_joint_1[1]+limit_joint_1[0]) + 0.5*factor_edge*(limit_joint_1[1]-limit_joint_1[0])] 
+    scale_y = [0.5*(limit_joint_2[1]+limit_joint_2[0]) - 0.5*factor_edge*(limit_joint_2[1]-limit_joint_2[0]), 
+                0.5*(limit_joint_2[1]+limit_joint_2[0]) + 0.5*factor_edge*(limit_joint_2[1]-limit_joint_2[0])] 
+    scale_z = [0.5*(limit_joint_3[1]+limit_joint_3[0]) - 0.5*factor_edge*(limit_joint_3[1]-limit_joint_3[0]), 
+                0.5*(limit_joint_3[1]+limit_joint_3[0]) + 0.5*factor_edge*(limit_joint_3[1]-limit_joint_3[0])] 
+    
+    M_trans = np.dot(Trans('x', 0, [0.5 , 0.5,0.5]), np.dot(Trans('z', 90, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5])))
+    traj_rot = np.dot(M_trans,traj.T).T
+    traj_rot[:,0] = traj_rot[:,0] 
+    traj_rot[:,1] = traj_rot[:,1] 
+    traj_rot[:,2] = traj_rot[:,2] 
+    traj = traj_rot
+
+if traj_type == 'dir_z':
+    scale_x = [0.5*(limit_joint_1[1]+limit_joint_1[0]) - 0.5*factor_edge*(limit_joint_1[1]-limit_joint_1[0]), 
+                0.5*(limit_joint_1[1]+limit_joint_1[0]) + 0.5*factor_edge*(limit_joint_1[1]-limit_joint_1[0])] 
+    scale_y = [0.5*(limit_joint_2[1]+limit_joint_2[0]) - 0.5*factor_edge*(limit_joint_2[1]-limit_joint_2[0]), 
+                0.5*(limit_joint_2[1]+limit_joint_2[0]) + 0.5*factor_edge*(limit_joint_2[1]-limit_joint_2[0])] 
+    scale_z = [0.5*(limit_joint_3[1]+limit_joint_3[0]) - 0.5*factor_edge*(limit_joint_3[1]-limit_joint_3[0]), 
+                0.5*(limit_joint_3[1]+limit_joint_3[0]) + 0.5*factor_edge*(limit_joint_3[1]-limit_joint_3[0])] 
+    
+    M_trans = np.dot(Trans('x', 0, [0.5 , 0.5,0.5]), np.dot(Trans('y', 90, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5])))
+    traj_rot = np.dot(M_trans,traj.T).T
+    traj_rot[:,0] = traj_rot[:,0] 
+    traj_rot[:,1] = traj_rot[:,1] 
+    traj_rot[:,2] = traj_rot[:,2] 
+    traj = traj_rot
     
 if traj_type == 'dir_xy':
     scale_x = [0.5*(limit_joint_1[1]+limit_joint_1[0]) - 0.5*factor_square_diag*(limit_joint_1[1]-limit_joint_1[0]), 
@@ -149,9 +179,56 @@ if traj_type == 'dir_xy':
     traj_rot = np.dot(M_trans,traj.T).T
     traj_rot[:,0] = traj_rot[:,0] / sqrt2
     traj_rot[:,1] = traj_rot[:,1] / sqrt2
-    traj_rot[:,2] = traj_rot[:,2] * 1
+    traj_rot[:,2] = traj_rot[:,2] 
+    traj = traj_rot
+
+if traj_type == 'dir_yz':
+    scale_x = [0.5*(limit_joint_1[1]+limit_joint_1[0]) - 0.5*factor_edge*(limit_joint_1[1]-limit_joint_1[0]), 
+                0.5*(limit_joint_1[1]+limit_joint_1[0]) + 0.5*factor_edge*(limit_joint_1[1]-limit_joint_1[0])] 
+    scale_y = [0.5*(limit_joint_2[1]+limit_joint_2[0]) - 0.5*factor_square_diag*(limit_joint_2[1]-limit_joint_2[0]), 
+                0.5*(limit_joint_2[1]+limit_joint_2[0]) + 0.5*factor_square_diag*(limit_joint_2[1]-limit_joint_2[0])] 
+    scale_z = [0.5*(limit_joint_3[1]+limit_joint_3[0]) - 0.5*factor_square_diag*(limit_joint_3[1]-limit_joint_3[0]), 
+                0.5*(limit_joint_3[1]+limit_joint_3[0]) + 0.5*factor_square_diag*(limit_joint_3[1]-limit_joint_3[0])] 
+    
+    M_trans = np.dot(Trans('x', 0, [0.5 , 0.5* sqrt2,0.5* sqrt2]), np.dot(Trans('x', 45, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5])))
+    traj_rot = np.dot(M_trans,traj.T).T
+    traj_rot[:,0] = traj_rot[:,0] 
+    traj_rot[:,1] = traj_rot[:,1] / sqrt2
+    traj_rot[:,2] = traj_rot[:,2] / sqrt2
+    traj = traj_rot
+
+if traj_type == 'dir_xz':
+    scale_x = [0.5*(limit_joint_1[1]+limit_joint_1[0]) - 0.5*factor_square_diag*(limit_joint_1[1]-limit_joint_1[0]), 
+                0.5*(limit_joint_1[1]+limit_joint_1[0]) + 0.5*factor_square_diag*(limit_joint_1[1]-limit_joint_1[0])] 
+    scale_y = [0.5*(limit_joint_2[1]+limit_joint_2[0]) - 0.5*factor_edge*(limit_joint_2[1]-limit_joint_2[0]), 
+                0.5*(limit_joint_2[1]+limit_joint_2[0]) + 0.5*factor_edge*(limit_joint_2[1]-limit_joint_2[0])] 
+    scale_z = [0.5*(limit_joint_3[1]+limit_joint_3[0]) - 0.5*factor_square_diag*(limit_joint_3[1]-limit_joint_3[0]), 
+                0.5*(limit_joint_3[1]+limit_joint_3[0]) + 0.5*factor_square_diag*(limit_joint_3[1]-limit_joint_3[0])] 
+    
+    M_trans = np.dot(Trans('x', 0, [0.5 * sqrt2, 0.5, 0.5* sqrt2]), np.dot(Trans('y', 45, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5])))
+    traj_rot = np.dot(M_trans,traj.T).T
+    traj_rot[:,0] = traj_rot[:,0] / sqrt2
+    traj_rot[:,1] = traj_rot[:,1] 
+    traj_rot[:,2] = traj_rot[:,2] / sqrt2
     traj = traj_rot
     
+#if traj_type == 'dir_xyz':
+#    scale_x = [0.5*(limit_joint_1[1]+limit_joint_1[0]) - 0.5*factor_cube_diag*(limit_joint_1[1]-limit_joint_1[0]), 
+#                0.5*(limit_joint_1[1]+limit_joint_1[0]) + 0.5*factor_cube_diag*(limit_joint_1[1]-limit_joint_1[0])] 
+#    scale_y = [0.5*(limit_joint_2[1]+limit_joint_2[0]) - 0.5*factor_cube_diag*(limit_joint_2[1]-limit_joint_2[0]), 
+#                0.5*(limit_joint_2[1]+limit_joint_2[0]) + 0.5*factor_cube_diag*(limit_joint_2[1]-limit_joint_2[0])] 
+#    scale_z = [0.5*(limit_joint_3[1]+limit_joint_3[0]) - 0.5*factor_cube_diag*(limit_joint_3[1]-limit_joint_3[0]), 
+#                0.5*(limit_joint_3[1]+limit_joint_3[0]) + 0.5*factor_cube_diag*(limit_joint_3[1]-limit_joint_3[0])] 
+#    
+#    M_trans = np.dot(Trans('x', 0, [0.5*sqrt3,0.5*sqrt3,0.5*sqrt3]), np.dot(Trans('x', 45, [0,0,0]), np.dot(Trans('z', 45, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5]))))
+#    traj_rot = np.dot(M_trans,traj.T).T
+#    traj_rot[:,0] = traj_rot[:,0] / sqrt3
+#    traj_rot[:,1] = traj_rot[:,1] / sqrt3
+#    traj_rot[:,2] = traj_rot[:,2] / sqrt3
+#    
+#    traj_rot[:,0] = (traj_rot[:,0] - 0.09093521295520893)/(0.9082482904638634-0.09093521295520893) # this is a special compensation, only for diamond traj pose
+#    traj = traj_rot
+
 if traj_type == 'dir_xyz':
     scale_x = [0.5*(limit_joint_1[1]+limit_joint_1[0]) - 0.5*factor_cube_diag*(limit_joint_1[1]-limit_joint_1[0]), 
                 0.5*(limit_joint_1[1]+limit_joint_1[0]) + 0.5*factor_cube_diag*(limit_joint_1[1]-limit_joint_1[0])] 
@@ -160,13 +237,11 @@ if traj_type == 'dir_xyz':
     scale_z = [0.5*(limit_joint_3[1]+limit_joint_3[0]) - 0.5*factor_cube_diag*(limit_joint_3[1]-limit_joint_3[0]), 
                 0.5*(limit_joint_3[1]+limit_joint_3[0]) + 0.5*factor_cube_diag*(limit_joint_3[1]-limit_joint_3[0])] 
     
-    M_trans = np.dot(Trans('x', 0, [0.5*sqrt3,0.5*sqrt3,0.5*sqrt3]), np.dot(Trans('x', 45, [0,0,0]), np.dot(Trans('z', 45, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5]))))
+    M_trans = np.dot(Trans('x', 0, [0.5*sqrt3,0.5*sqrt3,0.5*sqrt3]), np.dot(Trans('y', 45, [0,0,0]), np.dot(Trans('x', 45, [0,0,0]), np.dot(Trans('z', 45, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5])))))
     traj_rot = np.dot(M_trans,traj.T).T
     traj_rot[:,0] = traj_rot[:,0] / sqrt3
     traj_rot[:,1] = traj_rot[:,1] / sqrt3
     traj_rot[:,2] = traj_rot[:,2] / sqrt3
-    
-    traj_rot[:,0] = (traj_rot[:,0] - 0.09093521295520893)/(0.9082482904638634-0.09093521295520893) # this is a special compensation, only for diamond traj pose
     traj = traj_rot
 
 traj[:,0] = traj[:,0]*(scale_x[1]-scale_x[0]) + scale_x[0]
@@ -209,4 +284,5 @@ ax1.plot(traj[:,0]*Rad2Deg, traj[:,1]*Rad2Deg, traj[:,2])
 ax1.legend()
 plt.title('3D traj in joint space')
 plt.savefig(file_name[:-3] + 'png')
+
 
