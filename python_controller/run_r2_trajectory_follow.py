@@ -18,7 +18,7 @@ spd_factor = 2.0 # [IMPT]: Must be positive
 
 show_plot = False # If ture, a sub-realtime plot will be shown when running
 
-trajctory_file = 'trajectory/zigzag_traj_dir_x_0.3333.csv'
+trajctory_file = 'trajectory/zigzag_traj_dir_y_0.3333.csv'
 
 Deg2Rad = np.pi / 180.0
 Rad2Deg = 180.0 / np.pi
@@ -100,7 +100,7 @@ while moving == True:
         r2py_ctl.pub_state_command('pause')
         print('Trajectory following finished, time used(sec):')
         print(end_time)
-        sys.exit('Trajectory finished, existing')
+        sys.exit('Trajectory finished, exiting')
     if (idx - idx_pre) >= max_step_dis:
         idx = idx + max_step_dis
     elif (idx - idx_pre) <= min_step_dis:

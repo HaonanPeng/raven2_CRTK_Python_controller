@@ -25,7 +25,7 @@ import rospy
 import numpy as np
 import raven_py_controller
 
-run_time = 300.0 
+run_time = 1200.0 
 
 switch_smooth_factor = 1000.0 #[IMPT]: This is the smooth factor, it must be positive, and non-zero. Increase this factor will decrease the acceleration of joints after switching direction
 
@@ -37,17 +37,17 @@ limit_joint_1 = np.array([20.0, 60.0]) * Deg2Rad
 limit_joint_2 = np.array([55.0, 110.0]) * Deg2Rad
 limit_joint_3 = np.array([0.33, 0.42])
 
-velocity_joint_1 = 3 # degree/s
-velocity_joint_2 = 3 # degree/s
-velocity_joint_3 = 0.01 # m/s
+#velocity_joint_1 = 3 # degree/s
+#velocity_joint_2 = 3 # degree/s
+#velocity_joint_3 = 0.01 # m/s
 
 # This will be the range of how joint target can be changed 
 limit_range_joint_1 = np.array([5, -5]) * Deg2Rad
 limit_range_joint_2 = np.array([10, -10]) * Deg2Rad
 limit_range_joint_3 = np.array([0.02, -0.02])
 
-vel_limit_joint_1 = np.array([1.5, 2.5]) * Deg2Rad
-vel_limit_joint_2 = np.array([1.5, 2.5]) * Deg2Rad
+vel_limit_joint_1 = np.array([1.5, 3]) * Deg2Rad
+vel_limit_joint_2 = np.array([1.5, 3]) * Deg2Rad
 vel_limit_joint_3 = np.array([0.005, 0.010])
 
 rospy.init_node('raven_randonm_movement', anonymous=True)
