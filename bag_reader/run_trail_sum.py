@@ -7,11 +7,15 @@ from utils_bag_reader import rms_error
 rad2deg = 180.0 / np.pi
 deg2rad = np.pi / 180.0
 
-data_folder_path = 'result_files'
+record_name = '_rand_600'
+record_name = ''
 
-file_name_ravenstate = 'recorder_ravenstate.csv'
-file_name_CRTKmeasuredjs = 'recorder_CRTKmeasurejs.csv'
-file_name_ext_jpos = 'recorder_ext_jenc.csv'
+data_folder_path = 'result_files/recorded_trajs_temp'
+result_folder_path = 'training_data/recorded_trajs_temp'
+
+file_name_ravenstate = 'record_ravenstate' + record_name + '.csv'
+file_name_CRTKmeasuredjs = 'record_CRTKmeasurejs' + record_name + '.csv'
+file_name_ext_jpos = 'record_ext_jenc' + record_name + '.csv'
 
 raven_state = np.loadtxt(data_folder_path+'/'+file_name_ravenstate, delimiter=',')
 CRTK_measuredjs = np.loadtxt(data_folder_path+'/'+file_name_CRTKmeasuredjs, delimiter=',')
@@ -22,23 +26,40 @@ print(CRTK_measuredjs.shape)
 print(ext_jpos.shape)
 
 # combine and pair the three measurements according to time stamp
-data_comb = np.zeros((ext_jpos.shape[0],252))
+data_comb = np.zeros((raven_state.shape[0],252))
 print(data_comb.shape)
 
+
+#line_idx = 0
+#for line in ext_jpos:
+#    new_line = np.zeros((1,252))
+#    idx_raven_state = np.argmin(np.abs(raven_state[:,0] - line[0]))
+#    idx_CRTK_measuredjs = np.argmin(np.abs(CRTK_measuredjs[:,0] - line[0]))
+#    
+#    new_line[0, 0:4] = line
+#    new_line[0, 4:12] = CRTK_measuredjs[idx_CRTK_measuredjs, :]
+#    new_line[0, 12:] = raven_state[idx_raven_state, :]
+#    data_comb[line_idx, :] = new_line[0,:]
+#    
+#    line_idx += 1
+
 line_idx = 0
-for line in ext_jpos:
+start_time = raven_state[0,0]
+for line in raven_state:
     new_line = np.zeros((1,252))
-    idx_raven_state = np.argmin(np.abs(raven_state[:,0] - line[0]))
+    idx_ext_jpos = np.argmin(np.abs(ext_jpos[:,0] - line[0]))
     idx_CRTK_measuredjs = np.argmin(np.abs(CRTK_measuredjs[:,0] - line[0]))
     
-    new_line[0, 0:4] = line
+    new_line[0, 0:4] = ext_jpos[idx_ext_jpos, :]
     new_line[0, 4:12] = CRTK_measuredjs[idx_CRTK_measuredjs, :]
-    new_line[0, 12:] = raven_state[idx_raven_state, :]
+    new_line[0, 12:] = line
+
+    new_line[0,0] = new_line[0,0] - start_time
     data_comb[line_idx, :] = new_line[0,:]
     
     line_idx += 1
     
-    
+np.savetxt(result_folder_path + '/data_record' + record_name + '.csv', data_comb, delimiter=',')
 
 # 3D traj plots --------------------------------------------------------------
 fig = plt.figure()
@@ -116,8 +137,6 @@ plt.xlabel('time')
 plt.ylabel('m')
 plt.legend()
 plt.title('joint 3 - linear corrected')
-
-
 
 
 plt.show()
