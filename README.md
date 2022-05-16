@@ -101,6 +101,17 @@ Let RAVEN go to a target joint pose:
 python run_r2_goto.py
 ```
 ## Extract Data from ROS Bags
+After you run the ROS bag recording, and complete the task, use Ctrl+C to stop ROS bag recording.
+```
+roslaunch raven_2 r2_enc_CRTK_recorder.launch
+```
+Then, find the recorded ROG bags and copy them to the workspace.
+Next, run the bag reader:
+```
+python run_r2_bag_readers.py
+```
+It will extract recorded data in ROS bags to .csv file, where each line is a recorded message and the index of column can be found here:
+https://docs.google.com/spreadsheets/d/1zIyyZu1IgiSwZPnXcyceeg1Pl0jn3FcNLhonxUrfP5c/edit?usp=sharing
 
 # Manually Controlling RAVEN Using Mantis Leader Controller
 
