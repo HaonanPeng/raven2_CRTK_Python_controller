@@ -110,7 +110,7 @@ Next, run the bag reader:
 ```
 python run_r2_bag_readers.py
 ```
-It will extract recorded data in ROS bags to .csv file, where each line is a recorded message and the index of column can be found here:
+Please notice that you may need to change the file name and path name in the code before run it. It will extract recorded data in ROS bags to .csv file, where each line is a recorded message and the index of column can be found here:
 https://docs.google.com/spreadsheets/d/1zIyyZu1IgiSwZPnXcyceeg1Pl0jn3FcNLhonxUrfP5c/edit?usp=sharing
 
 # Manually Controlling RAVEN Using Mantis Leader Controller
