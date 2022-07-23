@@ -7,11 +7,11 @@ from utils_bag_reader import rms_error
 rad2deg = 180.0 / np.pi
 deg2rad = np.pi / 180.0
 
-record_name = '_rand_600'
-record_name = ''
+record_name = '_rand_1200_for_xyz'
+#record_name = ''
 
-data_folder_path = 'result_files/recorded_trajs_temp'
-result_folder_path = 'training_data/recorded_trajs_temp'
+data_folder_path = 'result_files/recorded_trajs_xyz'
+result_folder_path = 'training_data/recorded_trajs_xyz'
 
 file_name_ravenstate = 'record_ravenstate' + record_name + '.csv'
 file_name_CRTKmeasuredjs = 'record_CRTKmeasurejs' + record_name + '.csv'
