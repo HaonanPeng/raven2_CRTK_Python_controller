@@ -1,12 +1,11 @@
 import func_raven_bag_reader as reader
 
-record_name = '_rand1200_idle_h5'
-#record_name = ''
+record_name = '_load_500'
 
-bag_path =           'bag_files/exp3s_idle_time_decay'
-result_path =        'result_files/exp3s_idle_time_decay'
+bag_path =           'bag_files/expTemp_torque_load_0_to_500'
+result_path =        'result_files/expTemp_torque_load_0_to_500'
 data_folder_path =   result_path
-result_folder_path = 'training_data/exp3s_idle_time_decay'
+result_folder_path = 'training_data/expTemp_torque_load_0_to_500'
 
 bag_name = 'record_ext_jenc' + record_name + '.bag'
 result_name = bag_name[:-3] + 'csv'
