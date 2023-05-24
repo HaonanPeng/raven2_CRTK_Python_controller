@@ -10,10 +10,10 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from utils_transform import Trans
 
-traj_type = "dir_xz"
+traj_type = "dir_yz"
 scar_x = 0
-scar_y = 0.3333
-scar_z = 0.3333
+scar_y = 0.1666
+scar_z = 0.1666
 
 scar_l = 0.001
 
@@ -22,6 +22,10 @@ scar_l = 0.001
 limit_joint_1 = [20, 60]  # joint 1, in deg
 limit_joint_2 = [55, 110]  # joint 2, in deg
 limit_joint_3 = [0.33, 0.42]  # joint 3, in m
+
+#limit_joint_1 = [0.0, 1.0]  # for debug
+#limit_joint_2 = [0.0, 1.0]  # for debug
+#limit_joint_3 = [0.0, 1.0]  # for debug
 
 # factor_cube_diag = [0.0, 1.0] 
 # factor_edge = [0.5 - 0.5*1.0/np.sqrt(3), 0.5 + 0.5*1.0/np.sqrt(3)]
@@ -117,6 +121,7 @@ while finish == False:
             move_y = False
             move_z = False
             dis_z = 0
+    #print(point)
     if pos_z > 1.05:
             finish == True
             break
@@ -190,7 +195,7 @@ if traj_type == 'dir_yz':
     scale_z = [0.5*(limit_joint_3[1]+limit_joint_3[0]) - 0.5*factor_square_diag*(limit_joint_3[1]-limit_joint_3[0]), 
                 0.5*(limit_joint_3[1]+limit_joint_3[0]) + 0.5*factor_square_diag*(limit_joint_3[1]-limit_joint_3[0])] 
     
-    M_trans = np.dot(Trans('x', 0, [0.5 , 0.5* sqrt2,0.5* sqrt2]), np.dot(Trans('x', 45, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5])))
+    M_trans = np.dot(Trans('x', 0, [0.5 , 0.5* sqrt2,0.5* sqrt2]), np.dot(Trans('x', 45, [0,0,0]), np.dot(Trans('z', 90, [0,0,0]), Trans('z', 0, [-0.5,-0.5,-0.5]))))
     traj_rot = np.dot(M_trans,traj.T).T
     traj_rot[:,0] = traj_rot[:,0] 
     traj_rot[:,1] = traj_rot[:,1] / sqrt2
@@ -242,6 +247,8 @@ if traj_type == 'dir_xyz':
     traj_rot[:,0] = traj_rot[:,0] / sqrt3
     traj_rot[:,1] = traj_rot[:,1] / sqrt3
     traj_rot[:,2] = traj_rot[:,2] / sqrt3
+    traj_rot[:,0] = (traj_rot[:,0] - 0.0668181961291)/(0.933590052161-0.0668181961291) # this is a special compensation, only for diamond traj pose
+    traj_rot[:,2] = (traj_rot[:,2] - 0.0669872981078)/(0.934575650721-0.0669872981078) # this is a special compensation, only for diamond traj pose
     traj = traj_rot
 
 traj[:,0] = traj[:,0]*(scale_x[1]-scale_x[0]) + scale_x[0]
