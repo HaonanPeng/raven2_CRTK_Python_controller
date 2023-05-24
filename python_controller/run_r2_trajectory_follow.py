@@ -20,7 +20,7 @@ spd_factor = 2.0 # [IMPT]: defult 2.0, Must be positive
 
 show_plot = False # If ture, a sub-realtime plot will be shown when running
 
-trajctory_file = 'trajectory/zigzag_traj_dir_yz_0.1666.csv'
+trajctory_file = 'trajectory/zigzag_traj_dir_yz_0.25.csv'
 
 Deg2Rad = np.pi / 180.0
 Rad2Deg = 180.0 / np.pi
