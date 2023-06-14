@@ -3,6 +3,8 @@ This is a controller for RAVEN II surgical robot, based on CRTK API, using Pytho
 
 ***Please notice that this Python controller for RAVEN is still under development and the safety of using it has not been fully tested. If you want to use it, please contact me at penghaonan1993@gmail.com and I am glad to help!***
 
+***!!!Warning!!!: The force controller requires customization of the right arm. Only use it if you know what is going on.***
+
 <p align="center">
   <img src="https://github.com/HaonanPeng/raven2_CRTK_Python_controller/blob/main/fig/sum_raven_crtk_py.png" width="750" height="369">
 </p>
