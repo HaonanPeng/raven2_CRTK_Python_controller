@@ -20,8 +20,7 @@ author Haonan Peng, Dun-Tin Chiang, Yun-Hsuan Su, Andrew Lewis,
 """
 
 """
-This piece of code is for testing the single force unit. 
-The code reads in raven state, and compensates coulomb and viscous friction based on motor velocity 
+This piece of code is for setting up the force controller node 
 """
 
 import sys

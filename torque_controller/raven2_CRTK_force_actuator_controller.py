@@ -61,7 +61,7 @@ class raven2_crtk_force_controller():
                                   [0, 0, -500]
                                   ])
 
-        self.end_effector_loc = np.array([-77.0, -25.0, 14.0])
+        
 
         self.motor_dir = np.array([[1, 0, 0],     # unit vector of the direction of each motor, computed by motor location and end-effector location, transform might be needed, [0] not used, [1] for motor 1 
                                   [1, 0, 0],
@@ -71,6 +71,11 @@ class raven2_crtk_force_controller():
                                   [0, 0, 1],
                                   [0, 0, -1]
                                   ])
+
+
+        #variable for end_effector location
+        self.end_effector_loc = None 
+        # self.end_effector_loc = np.array([-77.0, -25.0, 14.0])
 
         self.force_d = np.array([0.0,0.0,0.0])  # The desired force, will be updated by callback
         self.force_d_static = np.array([0.0,0.0,0.0])  # The desired force, will not be update by callback, will stay static during solving the 6 forces
@@ -87,6 +92,8 @@ class raven2_crtk_force_controller():
 
         self.y_force_only = True  # [TEST] This is only used for a temprary test, where only y axis force is given, by motor 4 and 5
 
+        
+        self.prev_tor_cmd = None
 
         if not testing:
             self.__init_pub_sub()
@@ -101,7 +108,13 @@ class raven2_crtk_force_controller():
         # msg.position - (6,) x,y,z force and x, y, z torque (if applicable)
         # msg.velocity - (7,) desired torque command on motor 1-6, [0] is not used, [1] is motor 1
         self.__publisher_force_applied = rospy.Publisher('force_applied', sensor_msgs.msg.JointState, latch = True, queue_size = 1)
+        #TODO: create a publisher that publish the torque command
+        self.__publisher_torque_cmd = rospy.Publisher('torque_cmd', sensor_msgs.msg.JointState, latch = True, queue_size = 1)
+        #TODO end
         self.__subscriber_force_cmd = rospy.Subscriber('force_cmd', sensor_msgs.msg.JointState, self.__callback_force_cmd)
+        #TODO: create a subscriber to get the end effector position
+        self.__subscriber_ravenstate = rospy.Subscriber('ravenstate', raven_state, self.__callback_ravenstate)
+        #TODO end
 
         return None
 
@@ -112,6 +125,14 @@ class raven2_crtk_force_controller():
         self.new_force_cmd = True
         #print('force_cmd received')
         return None
+    
+    def __callback_ravenstate(self, msg):
+        #isolate the loaction of gold arm grasper
+        end_effector_pos_raw = np.array(msg.pos[0:3]) #unit: um
+        #print("For debug - end_effector_pos_raw = ", end_effector_pos_raw, np.shape(end_effector_pos_raw))
+        self.end_effector_loc = end_effector_pos_raw / 1000.0 #unit: mm
+        #print("For debug - self.end_effector_loc = ", self.end_effector_loc)
+
 
     def compute_motor_dir(self):
         self.motor_dir = self.end_effector_loc - self.motor_loc 
@@ -127,15 +148,22 @@ class raven2_crtk_force_controller():
 
         if not self.new_force_cmd:
             return None
+        
+        if self.end_effector_loc == None:
+            return None
         self.compute_motor_dir()
         # bounds = [(2.2, 5.0)] * 6  # No bounds on the variables
-        bounds = [(2.2, 6.0)] * 6
+        bounds = [(0.5, 6.0)] * 6 #unit: N
 
-        self.force_d_static[:] =  self.force_d[:]      
-        solution = minimize(self.objective, np.random.rand(6), bounds=bounds)
-        
+        self.force_d_static[:] =  self.force_d[:]
+        #TODO:add a mechanism that use the previous result as initial guess
+        if self.prev_tor_cmd is None:
+            self.prev_tor_cmd = np.random.rand(6)   
+        solution = minimize(self.objective, self.prev_tor_cmd, bounds=bounds)
+        # TODO end
+        # solution = minimize(self.objective, np.random.rand(6), bounds=bounds)
         self.tor_cmd[1:] = solution.x
-        #print("Solution: ", solution.x)  # [Test] Print the solution
+        # print("Solution: ", solution.x)  # [Test] Print the solution
         
         if self.y_force_only:
             self.force_d_static[0] = 0
@@ -149,7 +177,13 @@ class raven2_crtk_force_controller():
                 self.tor_cmd[4] = int(-10* self.force_d_static[1] + 22)
             #print(self.tor_cmd)
 
-        self.r2_tor_ctl.pub_torque_command_with_comp(self.tor_cmd)
+        #TODO:publish the list of torque command to /torque_cmd topic
+        #self.r2_tor_ctl.pub_torque_command_with_comp(self.tor_cmd) #original
+        tor_cmd_msg = sensor_msgs.msg.JointState()
+        tor_cmd_msg.position = self.tor_cmd
+        self.__publisher_torque_cmd.publish(tor_cmd_msg)
+        #TODO end
+        
         tor_vec = np.ones((6,1))
         tor_vec[:,0] =  self.tor_cmd[1:].T / 10
         force_applied = np.sum(self.motor_dir[1:] * tor_vec, axis = 0)
@@ -159,6 +193,8 @@ class raven2_crtk_force_controller():
         msg.position[:] = self.force_d_static.flat # [test] this line should be muted
         self.__publisher_force_applied.publish(msg)
         self.new_force_cmd = False
+        #TODO: update the current tor_cmd to the prev_tor_cmd
+        self.prev_tor_cmd = solution.x
 
 
         return None

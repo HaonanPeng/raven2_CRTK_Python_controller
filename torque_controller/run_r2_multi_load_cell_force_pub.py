@@ -15,15 +15,17 @@ calibration_list = []
 a_1 = 2.163318232246724780e-05
 a_2 = 2.163318232246724780e-05
 a_3 = 2.163318232246724780e-05
-a_4 = 2.587814952673832719e-05
-a_5 = 2.163318232246724780e-05
+#a_4 = 2.587814952673832719e-05
+a_4 = 6.950519714026019931e-06 #calt_dyx_306
+#a_5 = 2.163318232246724780e-05
+a_5 = 6.96586894668381e-06 #daysensor_dyx_306
 a_6 = 2.163318232246724780e-05
 
 
 a = [float(a_1), float(a_2), float(a_3), float(a_4), float(a_5), float(a_6)]
 b = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-exp_decay_factor = 0.2
+exp_decay_factor = 0.1#0.2
 force_pre = np.zeros(6)
 
 rospy.init_node('load_cell_driver', anonymous=True)
@@ -86,6 +88,7 @@ while not rospy.is_shutdown():
     msg.header.stamp = rospy.Time.now()
     msg.position[:] = force_filtered.flat
     lcf_pub.publish(msg)
-    force_pre = force_cur
+    #force_pre = force_cur
+    force_pre = force_filtered
 
 
