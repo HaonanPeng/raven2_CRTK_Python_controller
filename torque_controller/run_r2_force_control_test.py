@@ -20,38 +20,56 @@ author Haonan Peng, Dun-Tin Chiang, Yun-Hsuan Su, Andrew Lewis,
 """
 
 """
-This piece of code is for testing the single force unit. 
-The code reads in raven state, and compensates coulomb and viscous friction based on motor velocity 
+This piece of code is for testing the single/multiple force unit. 
+Specify the desired torque command in target_torques array 
 """
 
 import sys
 import time
 import utils_r2_torque_keyboard_controller as utils
 import rospy
+import sensor_msgs.msg
 import numpy as np
-import raven2_CRTK_torque_controller_FB as raven2_CRTK_torque_controller
 import copy
 
- 
-target_torques = np.zeros(7)  #assume these parameters are assignend by other higher controller 
-target_torques[4] = 3
-target_torques[5] = 3
+
+def force_test():
+    pub = rospy.Publisher('torque_cmd', sensor_msgs.msg.JointState, latch = True, queue_size = 1)
+    rospy.init_node('force_unit_joint45', anonymous=True)
+    rospy.loginfo("Node is created") 
+
+
+    target_torques = np.zeros(7)  #assume these parameters are assignend by other higher controller 
+    #the index here start's from 1-7
+    target_torques[4] = 10.0 
+    target_torques[5] = 10.0
+
+    #create message for publishing
+    tor_cmd_msg = sensor_msgs.msg.JointState()
+    tor_cmd_msg.position = target_torques
+    pub.publish(tor_cmd_msg)
+    #set the rate to 100 Hz
+    r = rospy.Rate(100)
+
+    #while not rospy.is_shutdown():
+        #pub.publish(tor_cmd_msg)
+        #r.sleep()
 
 
 
-rospy.init_node('force_unit_joint45', anonymous=True)
-rospy.loginfo("Node is created")
-
-#set the rate to 100 Hz
-r = rospy.Rate(100)
-
-r2_tor_ctl = raven2_CRTK_torque_controller.raven2_crtk_torque_controller(name_space = ' ', robot_name_1 = 'arm1', robot_name_2 = 'arm2', grasper_name = 'grasp1')
+if __name__ == '__main__':
+    try:
+        force_test()
+    except rospy.ROSInterruptException:
+        pass
 
 
 
-while not rospy.is_shutdown():
-    r2_tor_ctl.pub_tau_cmd_with_FB(target_torques)
-    r.sleep()
+
+
+
+
+
 
         
 
