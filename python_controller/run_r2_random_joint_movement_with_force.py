@@ -34,7 +34,7 @@ Deg2Rad = np.pi / 180.0
 Rad2Deg = 180.0 / np.pi
 
 # joint limits in degree and meter(joint 3), this is the soft limit of this controller
-limit_joint_1 = np.array([20.0, 60.0]) * Deg2Rad
+limit_joint_1 = np.array([20.0, 45.0]) * Deg2Rad   #[20, 60] defult
 limit_joint_2 = np.array([55.0, 110.0]) * Deg2Rad
 limit_joint_3 = np.array([0.33, 0.42])
 
